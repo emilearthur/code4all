@@ -1,0 +1,15 @@
+def email_validator(email):
+    """Checks email and returns if email is true or false.
+
+    Arguments:
+        email (string) -- email address 
+    """
+    if email.count('@') == 1 and email.count('.') == 1: 
+        return True 
+    else:
+        return False 
+
+# writing a test script before writing the function 
+def test_email_validator():
+    assert email_validator('junior@email.com') == True 
+    assert email_validator('junior@email@.com') == False
