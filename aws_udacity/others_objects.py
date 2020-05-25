@@ -123,7 +123,7 @@ class SalesPerson():
         total = 0 
         for pants in self.pants_sold:
             total += pants.price
-
+            
         self.total_sales = total
         return total
 
