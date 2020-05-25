@@ -1,5 +1,7 @@
 # Unit tests to check your solution
 from Gaussian import Gaussian
+# Unit tests to check your solution
+
 import unittest
 
 class TestGaussianClass(unittest.TestCase):
@@ -24,7 +26,20 @@ class TestGaussianClass(unittest.TestCase):
         self.assertEqual(round(self.gaussian.stdev, 2), 92.87, 'sample standard deviation incorrect')
         self.gaussian.read_data_file('numbers.txt', False)
         self.assertEqual(round(self.gaussian.stdev, 2), 88.55, 'population standard deviation incorrect')
-                
+
+    def test_add(self):
+        gaussian_one = Gaussian(25, 3)
+        gaussian_two = Gaussian(30, 4)
+        gaussian_sum = gaussian_one + gaussian_two
+        
+        self.assertEqual(gaussian_sum.mean, 55)
+        self.assertEqual(gaussian_sum.stdev, 5)
+
+    def test_repr(self):
+        gaussian_one = Gaussian(25, 3)
+        
+        self.assertEqual(str(gaussian_one), "mean 25, standard deviation 3")
+        
 tests = TestGaussianClass()
 
 tests_loaded = unittest.TestLoader().loadTestsFromModule(tests)
