@@ -38,3 +38,4 @@ class Distribution:
 		file.close()
 	
 		self.data = data_list
+
