@@ -18,6 +18,7 @@ class Gaussian(Distribution):
 
 	
 	def calculate_mean(self):
+		
 	
 		"""Function to calculate the mean of the data set.
 		
@@ -54,7 +55,7 @@ class Gaussian(Distribution):
 		else:
 			n = len(self.data)
 	
-		mean = self.mean
+		mean = self.calculate_mean()
 	
 		sigma = 0
 	

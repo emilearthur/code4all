@@ -14,7 +14,7 @@ class Binomial(Distribution):
         n (int) the total number of trials
     
     
-    TODO: Fill out all TODOs in the functions below
+    DONE: Fill out all TODOs in the functions below
             
     """
     
@@ -35,7 +35,7 @@ class Binomial(Distribution):
         
         # DONE: store the probability of the distribution in an instance variable p
         # DONE: store the size of the distribution in an instance variable n
-        self.p =prob 
+        self.p =prob
         self.n= size
        
         # DONE: Now that you know p and n, you can calculate the mean and standard deviation
@@ -83,7 +83,7 @@ class Binomial(Distribution):
     
         """
         
-        # TODO: calculate the standard deviation of the Binomial distribution. Store
+        # DONE: calculate the standard deviation of the Binomial distribution. Store
         #       the result in the self standard deviation attribute. Return the value
         #       of the standard deviation.
         self.stdev = math.sqrt(self.n * self.p * (1 - self.p))
@@ -105,7 +105,7 @@ class Binomial(Distribution):
     
         """        
         
-        # TODO: The read_data_file() from the Generaldistribution class can read in a data
+        # DONE: The read_data_file() from the Generaldistribution class can read in a data
         #       file. Because the Binomaildistribution class inherits from the Generaldistribution class,
         #       you don't need to re-write this method. However,  the method
         #       doesn't update the mean or standard deviation of
@@ -141,7 +141,7 @@ class Binomial(Distribution):
             None
         """
             
-        # TODO: Use the matplotlib package to plot a bar chart of the data
+        # DONE: Use the matplotlib package to plot a bar chart of the data
         #       The x-axis should have the value zero or one
         #       The y-axis should have the count of results for each case
         #
@@ -168,7 +168,7 @@ class Binomial(Distribution):
             float: probability density function output
         """
         
-        # TODO: Calculate the probability density function for a binomial distribution
+        # DONE: Calculate the probability density function for a binomial distribution
         #  For a binomial distribution with n trials and probability p, 
         #  the probability density function calculates the likelihood of getting
         #   k positive outcomes. 
@@ -176,7 +176,7 @@ class Binomial(Distribution):
         #   For example, if you flip a coin n = 60 times, with p = .5,
         #   what's the likelihood that the coin lands on heads 40 out of 60 times?
         
-        a = math.factorial(self.n) / (math.factorial(k) * math.factorial(self.n - k)) 
+        a = math.factorial(self.n) / (math.factorial(k) * (math.factorial(self.n - k)))
         b = (self.p**k )* ((1 - self.p)**(self.n-k))
 
         return a*b 
@@ -194,7 +194,7 @@ class Binomial(Distribution):
             
         """
     
-        # TODO: Use a bar chart to plot the probability density function from
+        # DONE: Use a bar chart to plot the probability density function from
         # k = 0 to k = n
         
         #   Hint: You'll need to use the pdf() method defined above to calculate the
@@ -236,7 +236,7 @@ class Binomial(Distribution):
         except AssertionError as error:
             raise
         
-        # TODO: Define addition for two binomial distributions. Assume that the
+        # DONE: Define addition for two binomial distributions. Assume that the
         # p values of the two distributions are the same. The formula for 
         # summing two binomial distributions with different p values is more complicated,
         # so you are only expected to implement the case for two distributions with equal p.
@@ -269,7 +269,7 @@ class Binomial(Distribution):
         
         """
         
-        # TODO: Define the representation method so that the output looks like
+        # DONE: Define the representation method so that the output looks like
         #       mean 5, standard deviation 4.5, p .8, n 20
         #
         #       with the values replaced by whatever the actual distributions values are
