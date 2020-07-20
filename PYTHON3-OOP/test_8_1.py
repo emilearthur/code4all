@@ -42,7 +42,7 @@ public class {classname} {{
     }}"""
 print(template)
 
-
+print("\n")
 
 """
 f-string can contain python code 
@@ -59,4 +59,14 @@ From: <{emails[0]}>
 To: <{emails[1]}>
 Subject: {message['subject']}
 {message['message']} """
+print(formatted)
+
+print("\n")
+
+message["emails"] = emails
+formatted = f"""
+From: <{message['emails'][0]}>
+To: <{message['emails'][1]}>
+Subject: {message['subject']}
+{message['message']}"""
 print(formatted)
