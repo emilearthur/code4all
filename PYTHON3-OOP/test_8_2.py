@@ -100,3 +100,39 @@ print(characters.encode("UTF-8"))
 print(characters.encode("latin-1"))
 print(characters.encode("CP437")) 
 print(characters.encode("ascii", errors="replace"))
+
+
+"""
+Mutable byte strings:
+The byte type like string is immutable.  We can use index and slice notation on a bytes object and seach for a particular sequence of bytes but we can't 
+extend or modify them. 
+Due to the inability for modification when dealing with I/O, we use bytearray built-in type which behaves like a list, except it holds bytes. 
+The constructor type can accept a bytes object to initailize it. The extend method can be used to append another bytes object to the existing array (for eg, 
+when more data comes from a socket or other I/O channel). Slice notation can be used on bytearray to modify the item inline. 
+
+e.g. below 
+"""
+print("\n")
+b = bytearray(b"abcdefgh")
+print(b)
+b[4:6] = b"\x15\xa3"
+print(b)
+
+# If we want to manipulate a sinlge element in a bytearray, we must pass an integer between 0 and 255 (inclusive) as the value. 
+# This integer represents a specific bytes pattern. If we try to pass a character or bytes object, it will raise an exception 
+# a single byte character can be converted using ord function.
+print("\n")
+b = bytearray(b"abcdef")
+print(b)
+b[3] = ord(b"g")
+b[4] = 68 # maps to ASCII character D
+print(b)
+
+"""
+The bytearray type has methods that allow it to behave like a list (we can append integer
+bytes to it, for example), but also like a bytes object; we can use methods such as count
+and find the same way they would behave on a bytes or str object. The difference is that
+bytearray is a mutable type, which can be useful for building up complex sequences of
+bytes from a specific input source.
+
+"""
