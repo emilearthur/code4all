@@ -86,6 +86,11 @@ class UpdatedURL:
             del new_state['timer']
         return new_state
 
+    
+    def __setstate__(self, data):
+        self.__dict__ = data
+        self.schedule()
+
 """
 The code above is not pickleable because self.timer instance. 
 
@@ -101,4 +106,11 @@ it will store the return value of that method instead of the __dict__.
 
 Adding a __getstate__ method to our UpdatedURL class that simply returns a copy of
 the __dict__ without a timer. 
+
+As we might expect, there is a complementary __setstate__ method that can be implemented to customize unpickling. 
+This method accepts a single argument, which is the object returned by __getstate__. 
+If we implement both methods, __getstate__ is not required to return a dictionary, since __setstate__ will 
+know what to do with whatever object __getstate__ chooses to return. In our case, we simply want to restore the
+__dict__, and then create a new timer:
+
 """
