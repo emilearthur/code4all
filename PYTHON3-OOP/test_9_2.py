@@ -67,8 +67,24 @@ class WarningFilter:
             raise StopIteration
         return l.replace("\tWARNING", "") 
         
+#with open(inname) as infile:
+#    with open(outname, "w") as outfile:
+#        filter = WarningFilter(infile) 
+#        for l in filter:
+#            outfile.write(l) 
+
+"""
+When python sees yield i a function, it takes that function and wraps it up in an object. 
+yeild is like a return function however when the function is called again via next, it will start from 
+where it left off. 
+"""
+def warnings_filter(insequence):
+    for l in insequence:
+        if "WARNING" in l:
+            yield l.replace("\tWARNING", "")  # yield is a key to generators.
+
 with open(inname) as infile:
-    with open(outname, "w") as outfile:
-        filter = WarningFilter(infile) 
+    with open(outname,"w") as outfile:
+        filter = warnings_filter(infile) 
         for l in filter:
             outfile.write(l) 
