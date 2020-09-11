@@ -9,4 +9,4 @@ INSERT INTO Sales (salesperson, amt, year, model, new) VALUES ('Don', 20000, 200
 
 */
 
-Select * FROM Sales 
+Select * FROM Sales WHERE new="true" AND year >= 2004
