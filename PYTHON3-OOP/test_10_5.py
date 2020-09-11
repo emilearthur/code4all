@@ -32,6 +32,7 @@ Implementation below:
 
 
 
+
 class OneOnly:
     _singleton = None 
     def __new__(cls, *args, **kwargs):
@@ -97,9 +98,9 @@ class FirstTag:
 class ChildNode:
     def process(self, remaining_string, parser):
         stripped = remaining_string.strip() 
-        if stripped.startwith("</"):
+        if stripped.startswith("</"):
             parser.state = close_tag 
-        elif stripped.startwith("<"):
+        elif stripped.startswith("<"):
             parser.state = open_tag
         else:
             parser.state = text_node
@@ -138,12 +139,40 @@ class CloseTag:
         parser.state = child_node 
         return remaining_string[ndx_end_tag + 1: ].strip() 
 
+class Parser:
+    def __init__(self, parser_string):
+        self.parser_string = parser_string 
+        self.root = None 
+        self.current_node = None 
+        self.state = first_tag
+    
+    def process(self, remaining_string):
+        remaining = self.state.process(remaining_string, self)
+        if remaining:
+            self.process(remaining)
+
+    def start(self):
+        self.process(self.parser_string)
+
+
 first_tag = FirstTag()
 child_node = ChildNode() 
 text_node = TextNode() 
 open_tag = OpenTag() 
 close_tag = CloseTag() 
 
+if __name__ == "__main__":
+    import sys 
+    with open(sys.argv[1]) as file:
+        contents = file.read()
+        p = Parser(contents)
+        p.start()
+
+        nodes = [p.root] 
+        while nodes:
+            node = nodes.pop(0) 
+            print(node) 
+            nodes = node.children + nodes
 """
 Notes: All we have doen above is create instances of various classses that can be reused. 
 Code inside the classes is not executed until the method is called and by this point, the entire module will be 
