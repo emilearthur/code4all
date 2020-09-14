@@ -1,0 +1,3 @@
+"""
+The abstract factory pattern 
+"""
