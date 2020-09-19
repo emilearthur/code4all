@@ -92,7 +92,7 @@ def m_sort(list:List) -> List:
         m_sort(list_1)  # left array 
         m_sort(list_2)  # right array
 
-        i, j, k = 0
+        i=j=k=0
 
         while i < len(list_1) and j < len(list_2):
             if list_1[i] < list_2[j]:

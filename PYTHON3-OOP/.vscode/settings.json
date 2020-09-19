@@ -8,5 +8,6 @@
             "database": "\\\\wsl$\\Ubuntu-18.04\\home\\emilextrig\\workspace\\code4all\\PYTHON3-OOP\\sales.db"
         }
     ],
-    "sqltools.useNodeRuntime": true
+    "sqltools.useNodeRuntime": true,
+    "notebook.displayOrder": []
 }
