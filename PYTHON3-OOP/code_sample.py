@@ -1,9 +1,9 @@
 import gc
 from typing import List
 import numpy as np
-from numpy.core.numeric import zeros_like
-from numpy.core.records import array 
+from collections import defaultdict
 
+from numpy.lib.function_base import median 
 
 #recursion explained 
 def find_max(num: List):
@@ -112,3 +112,44 @@ def m_sort(list:List) -> List:
             k += 1 
     return list
 
+
+class StatsList(list):
+    def mean(self:List) -> float:
+        return sum(self) / len(self) 
+    
+    def median(self:List) -> float:
+        if len(self) % 2:
+            return float(self[int(len(self) / 2)])
+        else:
+            idx = int(len(self) / 2) 
+            return float((self[idx] + self[idx-1]) / 2)
+
+    def mode(self:List) -> List:
+        freqs = defaultdict(int) 
+        for item in self:
+            freqs[item] += 1 
+        mode_freq = max(freqs.values())
+        modes = [] 
+        for item, value in freqs.items():
+            if value == mode_freq:
+                modes.append(item) 
+        return modes
+
+
+import datetime 
+import redis 
+
+class FlightStatusTracker:
+    ALLOWED_STATUSES = {"CANCELLED","DELAYED","ON TIME"} 
+
+    def __init__(self): 
+        self.redis =  redis.StrictRedis() 
+
+    def change_status(self, flight, status):
+        status = status.upper() 
+        if status not in self.ALLOWED_STATUSES:
+            raise ValueError(f"{status} is not a valid status") 
+
+        key = f"flightno:{flight}"
+        value = f"{datetime.datetime.now().isoformat()}|{status}"
+        self.redis.set(key, value) 

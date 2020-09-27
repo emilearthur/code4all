@@ -60,14 +60,14 @@ After writing a few small tests, we often find that we have to write the same se
 
 Eg below: the list subclass has three methods for statistical cal. 
 """
-"""
+
 from collections import defaultdict 
 
-class StatList(list):
+class StatsList(list):
     def mean(self:List) -> float:
         return sum(self) / len(self) 
     
-    def mean(self:List) -> float:
+    def median(self:List) -> float:
         if len(self) % 2:
             return float(self[int(len(self) / 2)])
         else:
@@ -90,7 +90,7 @@ class StatList(list):
 import unittest 
 class TestValidInputs(unittest):
     def setUp(self):
-        self.stats = StatList([1,2,2,3,3,4])
+        self.stats = StatsList([1,2,2,3,3,4])
 
     def test_mean(self):
         self.assertEqual(self.stats.mean(), 2.5) 
@@ -104,7 +104,7 @@ class TestValidInputs(unittest):
         self.assertEqual(self.stats.mode(), [2,3])
         self.stats.remove(2)
         self.assertEqual(self.stats.mode(), [3]) 
-"""
+
 
 
 """"
