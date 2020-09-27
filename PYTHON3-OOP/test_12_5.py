@@ -129,8 +129,45 @@ another mock object.
 Thus, when access dt.now, it gives us a new mock object. We set the return_value of that object to our fake_now object. 
 Now, whenever the datetime.datetime.now function is called, it will retrun our object instead of a new mock object. But 
 when the interpreter exists the context manager, the orginal datetime.datetime.now() functionality is restored.
+
 After calling our change_status method with know values, we use the assert_called_once_with function of the Mock class to 
 ensure that the now function was indeed called exactly once with no args.  We the call it a second time to prove that the 
 redis.set method was called with args that were formatted as we expected them to be.
+
+We also mock out the redis.StrictRedis class to return a mock in a setUp method. Also, an alternative implementation, 
+is to construct the redis instance inside __init__ as below. 
+def __init__(self, redis_instance=None):
+    self.redis = redis_instance if redis_instance else redis.StrictRedis()
+
+This implemtation above, allows us to pass a mocj in when testing so the StrictRedis method never gets constructed. 
+Additionally, it allows any client code that talks to FlightStatusTracker to pass in their own redis instance. 
+
+In general, we should be quite stingy with mocks. If we find ourselves mocking out
+multiple elements in a given unit test, we may end up testing the mock framework rather
+than our real code. This serves no useful purpose whatsoever; after all, mocks are well-
+tested already! If our code is doing a lot of this, it's probably another sign that the API we
+are testing is poorly designed. Mocks should exist at the boundaries between the code
+under test and the libraries they interface with. If this isn't happening, we may need to
+change the API so that the boundaries are redrawn in a different place.
+
+
+How  much testing is enough?
+Code coverage is an estimate of the number of lines of code that are executed by a program. If we know that number and the
+number of lines of code that are executed by a program, we can get an estimate of what percentage of the code was really 
+tested or covered. If we adittionally have an indicator as to which  line was not tested, we can more easily write new 
+testes to ensure thos lines are less broken. 
+
+We use coverage for the task stated above. 
+
+We don't have space to cover all the details of the coverage API, so we'll just look at a few typical examples.
+If we have a Python script that runs all our unit tests for us (for example, using unittest.main, discover, pytest, or a
+custom test runner), we can use the following command to perform a coverage analysis:
+
+$coverage run test_code_sample.py # performing coverage analysis
+$coverage report # get analysis of the code coverage. 
+$coverage report -m # add a column that includes stats module that were not executed during the test run.4
+
+Also we can install pytest-coverage, a plugin which adds cmd options to pytest  eg pytest test_test.py --cover-report 
+which can be set to html, report or annotate 
 """
 

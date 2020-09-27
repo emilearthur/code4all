@@ -1,4 +1,8 @@
-from code_sample import m_sort, results_, sum_, factorial
+from code_sample import m_sort, results_, sum_, factorial, FlightStatusTracker
+import datetime
+from unittest.mock import Mock 
+import pytest 
+from unittest.mock import patch
 
 def test_results_9():
     assert(results_(4,5) == 9)
@@ -57,4 +61,34 @@ def test_m_sort_l3():
 
 def test_m_sort_l4():
     assert(m_sort([3,5,2,1,2]) == [1, 2, 2, 3, 5])
+
+
+
+@pytest.fixture
+def tracker():
+    return FlightStatusTracker()
+
+
+def test_mock_method(tracker):
+    """
+    Written using pytest syntax, asserts that the correct exception is raised when an inappropriate arg is passed in. 
+    Additionally it creates a Mock object for the set method and makes sure that its never called. It i was, it means 
+    there is a bug in our exception handling code. 
+    """
+    tracker.redis.set = Mock()
+    fake_now = datetime.datetime(2015, 4 , 1) 
+    with pytest.raises(ValueError) as ex:
+        tracker.change_status("AC101", "lost")
+    assert ex.value.args[0] == "LOST is not a valid status"
+    assert tracker.redis.set.call_count == 0
+
+
+def test_patch_1(tracker):
+    tracker.redis.set = Mock() 
+    fake_now = datetime.datetime(2015, 4, 1) 
+    with patch("datetime.datetime") as dt:
+        dt.now.return_value = fake_now
+        tracker.change_status("AC102", "on time") 
+    dt.now.assert_called_once_with()
+    tracker.redis.set.assert_called_once_with("flightno:AC102", "2015-04-01T00:00:00|ON TIME")
     
