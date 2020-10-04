@@ -43,6 +43,7 @@ to do the work. This means there is entirely seperate copy of the python interpr
 Eg. for parallize below
 """
 from multiprocessing import Process, cpu_count 
+from threading import Thread
 import time 
 import os 
 
@@ -52,9 +53,15 @@ class MuchCPU(Process):
         for i in range(200000000):
             pass 
 
+class MuchCPU_(Thread):
+    def run(self):
+        print(os.getpid()) 
+        for i in range(200000000):
+            pass 
 
 if __name__ == "__main__":
-    procs = [MuchCPU() for f in range(cpu_count())] 
+    #procs = [MuchCPU() for f in range(cpu_count())] 
+    procs = [MuchCPU_() for f in range(cpu_count())]
     t = time.time() 
     for p in procs:
         p.start() 
@@ -70,5 +77,8 @@ In the code above the if __name__ == "__main__" guards around the module level c
 is being imported, rather than run as a program. This is a good practice in general. Behind the scens, multiprocessing may 
 have to reimport the module inside the new process in order to execute the run() method.  If we allow the entire module to 
 execute at that point, it would start creating new processes recursively until the os ran out of resources, crashing your 
-computer. 
+computer. We construct one process for each processor core on our machine, then start and join each of those processes. 
+
+Replace Process with Thread, the time the process run is longer. Thread takes twice the time of Process. This is the cost 
+of the GIL; in other languages, the threaded version would run at least as fast as the multiprocessing version. 
 """
