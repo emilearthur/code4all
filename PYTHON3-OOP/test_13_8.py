@@ -92,6 +92,38 @@ is a class that has specific methods that are called when relevant events happen
 of UDP, we build the protocol class as a subclass of DatagramProtocol.  
 For DNS, each recieved datagram must be parsed and responded to, at which point, the interaction is over. 
 
-Thus, when a datagram is recieved, we process the packet, lookup the IP and construct a response
+Thus, when a datagram is recieved, we process the packet, lookup the IP and construct a response using the 
+functions we arent talking about. Then , we instruct the underlying transport to send the resulting packet 
+back to the requesting client using sendto method. 
+The transport represents a communication stream, thus abstracting away all the fuss of sending and receiving 
+data on a UDP socket on an event loop. 
+
+The UDP transport is constructed by calling the loop's create_datagram_endpoint coroutine. This constructs 
+the appropiate UDP socket and start listening on it. We pass it the address that the socket needs to listen on 
+and more importantly the protocl class we created so that the transport know what to call when it receives 
+the data. 
+
+Since the process of initializing a socket takes a non-trivial amount of time and would block the event loop,
+the create_datagram_endpoint function is a coroutine. In our example, we don't need to do anything while we
+wait for this initialization, so we wrap the call in loop.run_until_complete. The event loop takes care of 
+managing the future, and when it's complete, it returns a tuple of two values: the newly initialized 
+transport and the protocol object that was constructed from the class we passed in.
+
+Behind the scenes, the transport has set up a task on the event loop that is listening for
+incoming UDP connections. All we have to do, then, is start the event loop running with the
+call to loop.run_forever() so that the task can process these packets. When the packets
+arrive, they are processed on the protocol and everything just works.
+
+The only other major thing to pay attention to is that transports (and, indeed, event loops)
+are supposed to be closed when we are finished with them. In this case, the code runs just
+fine without the two calls to close(), but if we were constructing transports on the fly (or
+just doing proper error handling!), we'd need to be quite a bit more conscious of it.
+You may have been dismayed to see how much boilerplate is required in setting up a
+protocol class and the underlying transport. AsyncIO provides an abstraction on top of
+these two key concepts, called streams. We'll see an example of streams in the TCP server in
+the next example.
+
+
+
 """
 
