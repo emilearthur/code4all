@@ -1,4 +1,5 @@
 {
     "python.pythonPath": "/home/emilextrig/miniconda3/envs/ml/bin/python",
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true
 }

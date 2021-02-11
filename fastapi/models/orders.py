@@ -6,13 +6,14 @@ from pydantic import BaseModel
 order_json = {
     'item_id': '123',
     'created_date': '2002-11-24 12:22',
-    'pages_visited' :  [1,2,'3'],
+    'pages_visited':  [1, 2, '3'],
     'price': 17.22
 }
 
 """
 class Order:
-    def __init__(self, item_id:int, created_date: datetime.datetime, pages_visited:List[int], price:float) -> None:
+    def __init__(self, item_id:int, created_date: datetime.datetime, 
+                 pages_visited: List[int], price:float) -> None:
         self.item_id = item_id
         self.created_date = created_date 
         self.pages_visited = pages_visited
@@ -23,7 +24,8 @@ class Order:
 
 
 class Order:
-    def __init__(self, item_id:int, created_date: datetime.datetime, pages_visited:List[int], price:float) -> None:
+    def __init__(self, item_id:int, created_date: datetime.datetime,
+                 pages_visited:List[int], price:float) -> None:
         self.item_id = item_id
         self.created_date = created_date 
         self.pages_visited = pages_visited
@@ -34,7 +36,8 @@ class Order:
 """
 """
 class Order:
-    def __init__(self, item_id:int, created_date: datetime.datetime, price:float, pages_visited:None) -> None:
+    def __init__(self, item_id:int, created_date: datetime.datetime, 
+                 price:float, pages_visited:None) -> None:
         if pages_visited is None:
             pages_visited = [] 
         
