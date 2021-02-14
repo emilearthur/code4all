@@ -47,6 +47,16 @@
         </li>
     </ul>
     </p>
+    {% if events %}
+    <div>
+        <h2> Recent weather events</h2>
+        <ul>
+            {% for e in events %}
+            <li> {{e.location.city }}, {{e.location.country }}: {{e.description }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    </div>
 
     </div>
 

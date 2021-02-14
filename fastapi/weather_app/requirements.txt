@@ -3,3 +3,5 @@ uvicorn
 httpx
 jinja2
 aiofiles
+fastcore
+requests
