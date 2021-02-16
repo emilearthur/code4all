@@ -52,3 +52,7 @@ nodeLanguageServer.*/**
 *.pb
 *pbtxt
 *.json
+
+
+folders 
+digitalocean/
