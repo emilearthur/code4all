@@ -42,6 +42,8 @@ pydevd*.log
 nodeLanguageServer/**
 nodeLanguageServer.*/**
 
+__pycache__/
+
 
 
 # data files 
