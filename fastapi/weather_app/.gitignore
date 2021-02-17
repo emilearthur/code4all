@@ -43,7 +43,8 @@ nodeLanguageServer/**
 nodeLanguageServer.*/**
 
 __pycache__/
-
+fastapi-env
+.DS_Store
 
 
 # data files 
