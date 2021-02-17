@@ -63,8 +63,16 @@ systemctl enable weather
 apt install nginx 
 
 # careful here. if you are using default, maybe skip this 
-rm /etc/nginx/sites-enabled/default
+rm /etc/nginx/sites-enabled/default # do after cp below
 
 cp /apps/app_repo/ch08-deployment/server/nginx/weather.nginx /etc/nginx/sites-enabled/ 
 update-rc.d nginx enable 
-service nginx start 
+service nginx restart 
+
+
+# Optionally add SSL support via Let's Encrypt:
+# https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-18-04
+
+add-apt-repository ppa:certbot/certbot
+apt install python3-certbot-nginx
+certbot --nginx -d weatherapi.talkpython.com
