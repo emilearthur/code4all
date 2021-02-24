@@ -71,7 +71,7 @@ def update(id: int, request: schemas.Blog, db: Session = Depends(get_db)):
                  'created_at': now},
                  synchronize_session=False)
     db.commit()
-    return Response(status_code=status.HTTP_202_ACCEPTED)
+    return JSONResponse(status_code=status.HTTP_202_ACCEPTED, content=f"blog {id} has been updated")
 
 
 # get all blogs in db
