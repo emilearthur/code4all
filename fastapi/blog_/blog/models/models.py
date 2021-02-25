@@ -1,6 +1,9 @@
 # type: ignore
+from sqlalchemy.sql.schema import ForeignKey
 from ..database import Base
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
+
 
 class Blog(Base):
     __tablename__ = 'blogs'
@@ -9,6 +12,9 @@ class Blog(Base):
     body = Column(String)
     published = Column(Boolean) 
     created_at = Column(DateTime)
+    user_id = Column(Integer, ForeignKey('users.id'))
+
+    creator = relationship("User", back_populates="blogs")
 
 
 class User(Base):
@@ -17,4 +23,6 @@ class User(Base):
     name = Column(String)
     email = Column(String)
     password = Column(String)
+
+    blogs = relationship("Blog", back_populates="creator")
 

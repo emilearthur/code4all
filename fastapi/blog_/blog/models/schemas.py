@@ -1,5 +1,5 @@
 # type: ignore
-from typing import Optional
+from typing import Optional, List
 import datetime
 from pydantic import BaseModel
 
@@ -9,15 +9,13 @@ class Blog_submission(BaseModel):
     published: Optional[bool]
 
 
-class Blog(Blog_submission):
+class BlogBase(Blog_submission):
     created_at: Optional[datetime.datetime]
 
 
-# response model 
-class ShowBlog(Blog):
+class Blog(BlogBase):
     class Config():
         orm_mode = True
-
 
 # getting only the title as a response
 # class ShowBlog(BaseModel):
@@ -38,8 +36,17 @@ class User_extend(User):
     DOB: datetime.date
 
 
+# response model 
 class ShowUser(BaseModel):
     name: str
     email: str
+    blogs: List[Blog] = []
+    class Config():
+        orm_mode = True
+
+
+# response model 
+class ShowBlog(Blog):
+    creator: ShowUser
     class Config():
         orm_mode = True

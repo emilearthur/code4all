@@ -1,6 +1,6 @@
 import requests
 
-stufF_del = [9,11,15,16,17,19,20,21,22]
+stufF_del = [1]
 
 
 
