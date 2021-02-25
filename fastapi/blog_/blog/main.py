@@ -1,18 +1,18 @@
 # type: ignore
 import fastapi
-from typing import List, Dict
-from pydantic.main import create_model
-import datetime
-
-from sqlalchemy.engine import create_engine
-import blog
-from .models import schemas
-from .models import models
-from .database import engine, SessionLocal
 from fastapi import Depends, status, Response, HTTPException
 from fastapi.responses import JSONResponse
 
+from typing import List, Dict
+import datetime
+
+from sqlalchemy.engine import create_engine
 from sqlalchemy.orm import Session
+
+from .models import schemas
+from .models import models
+from .database import engine, SessionLocal
+
 
 app = fastapi.FastAPI()
 
@@ -58,8 +58,9 @@ async def destroy(id: int, db: Session = Depends(get_db)):
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
+# update blog
 @app.put('/blog/{id}',  name="update_blog", status_code=status.HTTP_202_ACCEPTED)
-def update(id: int, request: schemas.Blog, db: Session = Depends(get_db)):
+async def update(id: int, request: schemas.Blog, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id)
     if not blog.first():
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Blog {id} not found in db, thus cannot updated")
@@ -75,14 +76,14 @@ def update(id: int, request: schemas.Blog, db: Session = Depends(get_db)):
 
 
 # get all blogs in db
-@app.get('/blog', name='all_blogs')
+@app.get('/blog', name='all_blogs', response_model=List[schemas.ShowBlog])
 async def blogs_all(db: Session = Depends(get_db)) -> List:
     blogs = db.query(models.Blog).all()
     return blogs
 
 
 # get a blog with blog id
-@app.get('/blog/{id}', name='show_blog', status_code=200)
+@app.get('/blog/{id}', name='show_blog', status_code=status.HTTP_200_OK, response_model=schemas.ShowBlog)
 async def show_blog(id: int, response: Response, db: Session = Depends(get_db)) -> Dict:
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
     if not blog:
@@ -92,4 +93,18 @@ async def show_blog(id: int, response: Response, db: Session = Depends(get_db)) 
         #return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=data)
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=data)
     return blog
+
+
+# creating a user 
+@app.post('/user', name="add_user", status_code=status.HTTP_201_CREATED, response_model=schemas.ShowUser)
+def create_user(user: schemas.User, db: Session = Depends(get_db)) -> models.User:
+    new_user = models.User(name = user.name,
+                           email = user.email, 
+                           password = user.password)
+    db.add(new_user) 
+    db.commit()
+    db.refresh(new_user)
+    return new_user
+
+
 
