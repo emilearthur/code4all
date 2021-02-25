@@ -38,6 +38,8 @@ class User_extend(User):
     DOB: datetime.date
 
 
-class ShowUser(User):
+class ShowUser(BaseModel):
+    name: str
+    email: str
     class Config():
         orm_mode = True

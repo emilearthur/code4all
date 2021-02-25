@@ -12,6 +12,8 @@ from sqlalchemy.orm import Session
 from .models import schemas
 from .models import models
 from .database import engine, SessionLocal
+from .hashing import Hash
+
 
 
 app = fastapi.FastAPI()
@@ -95,12 +97,15 @@ async def show_blog(id: int, response: Response, db: Session = Depends(get_db)) 
     return blog
 
 
+
+
+
 # creating a user 
 @app.post('/user', name="add_user", status_code=status.HTTP_201_CREATED, response_model=schemas.ShowUser)
-def create_user(user: schemas.User, db: Session = Depends(get_db)) -> models.User:
+async def create_user(user: schemas.User, db: Session = Depends(get_db)) -> models.User:
     new_user = models.User(name = user.name,
                            email = user.email, 
-                           password = user.password)
+                           password = Hash.bcryt(user.password))
     db.add(new_user) 
     db.commit()
     db.refresh(new_user)
