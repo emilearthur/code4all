@@ -35,7 +35,7 @@ def index():
 
 
 # create a blog
-@app.post('/blog', name='add_blog', status_code=status.HTTP_201_CREATED)
+@app.post('/blog', name='create_blog', status_code=status.HTTP_201_CREATED, tags=['blogs'])
 async def create(blog: schemas.Blog, db: Session = Depends(get_db)) -> models.Blog:
     now = datetime.datetime.now()
     new_blog = models.Blog(title=blog.title, 
@@ -49,7 +49,7 @@ async def create(blog: schemas.Blog, db: Session = Depends(get_db)) -> models.Bl
 
 
 # delete a blog
-@app.delete('/blog/{id}', name="delete_blog", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete('/blog/{id}', name="delete_blog", status_code=status.HTTP_204_NO_CONTENT, tags=['blogs'])
 async def destroy(id: int, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id)
     if not blog.first():
@@ -61,7 +61,7 @@ async def destroy(id: int, db: Session = Depends(get_db)):
 
 
 # update blog
-@app.put('/blog/{id}',  name="update_blog", status_code=status.HTTP_202_ACCEPTED)
+@app.put('/blog/{id}',  name="update_blog", status_code=status.HTTP_202_ACCEPTED, tags=['blogs'])
 async def update(id: int, request: schemas.Blog, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id)
     if not blog.first():
@@ -78,22 +78,22 @@ async def update(id: int, request: schemas.Blog, db: Session = Depends(get_db)):
 
 
 # get all blogs in db
-@app.get('/blog', name='all_blogs', response_model=List[schemas.ShowBlog])
+@app.get('/blog', name='all_blogs', response_model=List[schemas.ShowBlog], tags=['blogs'])
 async def blogs_all(db: Session = Depends(get_db)) -> List:
     blogs = db.query(models.Blog).all()
     return blogs
 
 
 # get a blog with blog id
-@app.get('/blog/{id}', name='show_blog', status_code=status.HTTP_200_OK, response_model=schemas.ShowBlog)
+@app.get('/blog/{id}', name='show_blog', status_code=status.HTTP_200_OK, response_model=schemas.ShowBlog, tags=['blogs'])
 async def show_blog(id: int, response: Response, db: Session = Depends(get_db)) -> Dict:
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
     if not blog:
         # response.status_code = status.HTTP_404_NOT_FOUND
-        data = {'detail': f"Blog {id} not found"}
+        details = f"Blog {id} not found"
         # return data
         #return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content=data)
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=data)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=details)
     return blog
 
 
@@ -101,7 +101,7 @@ async def show_blog(id: int, response: Response, db: Session = Depends(get_db)) 
 
 
 # creating a user 
-@app.post('/user', name="add_user", status_code=status.HTTP_201_CREATED, response_model=schemas.ShowUser)
+@app.post('/user', name="create_user", status_code=status.HTTP_201_CREATED, response_model=schemas.ShowUser, tags=['users'])
 async def create_user(user: schemas.User, db: Session = Depends(get_db)) -> models.User:
     new_user = models.User(name = user.name,
                            email = user.email, 
@@ -110,6 +110,15 @@ async def create_user(user: schemas.User, db: Session = Depends(get_db)) -> mode
     db.commit()
     db.refresh(new_user)
     return new_user
+
+
+@app.get('/user/{id}', name="get_user", response_model=schemas.ShowUser, tags=['users'])
+def get_user(id: int,  db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.id == id).first()
+    if not user:
+        details = f"User not found"
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=details)
+    return user
 
 
 
