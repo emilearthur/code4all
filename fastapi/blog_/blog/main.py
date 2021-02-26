@@ -1,8 +1,6 @@
 # type: ignore
 import fastapi
 
-from sqlalchemy.engine import create_engine
-
 from .models import models
 from .database import engine
 
@@ -16,7 +14,6 @@ def configure_routing():
 
 
 app = fastapi.FastAPI()
-
 
 models.Base.metadata.create_all(bind=engine)  
 
