@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from ..models import schemas, models
 from ..database import get_db
-from ..repository import blog
+from ..crud import blog
 
 
 router = fastapi.APIRouter(

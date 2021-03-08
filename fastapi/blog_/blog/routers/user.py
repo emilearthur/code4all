@@ -1,3 +1,4 @@
+from typing import Optional
 import fastapi
 from fastapi import Depends, status
 
@@ -8,7 +9,7 @@ from ..models import schemas, models
 from ..database import get_db
 
 
-from ..repository import user
+from ..crud import user
 
 router = fastapi.APIRouter(
     prefix="/user",
@@ -18,9 +19,10 @@ router = fastapi.APIRouter(
 # creating a user 
 @router.post('/', name="create_user", status_code=status.HTTP_201_CREATED, response_model=schemas.ShowUser)
 async def create_user(request: schemas.User, db: Session = Depends(get_db)) -> models.User:
-    return user.create(request, db)
+    return await user.create(request, db)
 
 
-@router.get('/{id}', name="get_user", response_model=schemas.ShowUser)
-def get_user(id: int,  db: Session = Depends(get_db)):
-    return user.show_user(id, db)
+@router.get('/{id}', name="show_user_id", response_model=schemas.ShowUser)
+async def get_user(id: int,  db: Session = Depends(get_db)):
+    return await user.show_user(id, db)
+
