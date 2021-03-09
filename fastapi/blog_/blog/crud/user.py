@@ -29,7 +29,7 @@ async def create(request: schemas.User, db: Session):
     # new_user = await get_user_name(request.email, db)
 
     new_user = models.User(name = request.name,
-                           email = request.email, 
+                           email = (request.email).lower(), 
                            password = Hash.get_password_hash(request.password))
     db.add(new_user) 
     db.commit()

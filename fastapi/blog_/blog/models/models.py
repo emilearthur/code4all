@@ -4,7 +4,7 @@ from ..database import Base
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
-
+# Database model for Blog
 class Blog(Base):
     __tablename__ = 'blogs'
     id = Column(Integer, primary_key=True, index=True)
@@ -17,6 +17,7 @@ class Blog(Base):
     creator = relationship("User", back_populates="blogs")
 
 
+# Database model for User
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
