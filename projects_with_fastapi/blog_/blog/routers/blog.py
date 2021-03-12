@@ -3,7 +3,6 @@ import fastapi
 from fastapi import Depends, status
 
 from typing import List, Dict
-import datetime
 
 from sqlalchemy.orm import Session
 

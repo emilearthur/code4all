@@ -1,11 +1,10 @@
-from blog.database import get_db
 import fastapi
 from fastapi import Depends, HTTPException, status
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 
 from sqlalchemy.orm import Session
 
-from ..models import schemas, models
+from ..models import  models
 from ..database import get_db
 from ..hashing import Hash
 from ..token import create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES

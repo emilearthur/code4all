@@ -4,8 +4,6 @@ from datetime import timedelta, datetime
 
 from jose import jwt, JWTError
 
-from fastapi import Depends, HTTPException, status
-
 from blog.models.schemas import TokenData
 
 # to get a string like this run:
