@@ -1,0 +1,81 @@
+Notes for database migrations. 
+
+After writing your model to generate migration files. 
+run => python manage.py makemigrations {appname} 
+
+After above, run the code below to make migration
+run => python manage.py migrate
+
+query by order, name and it_compted 
+http ":8000/drones/?drone_category=1&has_it_competed=False&ordering=-name"  
+
+http ":8000/competitions/?pilot_name=Penelope+Pitstop&drone_name=WonderDrone"
+
+http ":8000/competitions/?min_distance_in_feet=700&max_distance_in_feet=9000&from_achievement_date=2020-10-18&to_achievement_date=2021-10-22&ordering=-achievement_date"
+
+query with start search 
+=> http ":8000/drones/?search=G"
+
+
+http :8000/pilots/ "Authorization: Token PASTE-TOKEN-HERE"
+=> http :8000/pilots/ "Authorization: Token cb18783b2cf89bebe7f9023e171bfc681024e382" 
+
+The following are the three throttling classes:
+AnonRateThrottle : This class limits the rate of requests that an anonymous
+    user can make, and therefore, its rules apply to unauthenticated users. The
+    unique cache key is the IP address of the incoming request. Hence, all the
+    requests originated in the same IP address will accumulate the total number of
+    requests for this IP.
+UserRateThrottle : This class limits the rate of requests that a specific user can
+    make and applies to both authenticated and non-authenticated users. Obviously,
+    when the requests are authenticated, the authenticated user ID is the unique
+    cache key. When the requests are unauthenticated and come from anonymous
+    users, the unique cache key is the IP address of the incoming request.
+ScopedRateThrottle : This class is useful whenever we have to restrict access to
+    specific features of our RESTful Web Service with different rates. The class uses
+    the value assigned to the throttle_scope attribute to limit requests to the parts
+    that are identified with the same value.
+
+making multiple request via bash.
+==> for i in {1..4}; do http :8000/competitions/; done; 
+
+
+The following are the five versioning classes:
+AcceptHeaderVersioning : This class configures a versioning scheme that
+    requires each request to specify the desired version as an additional value of the
+    media type specified as a value for the Accept key in the header. For example, if
+    a request specifies 'application/json; version=1.2' as the value for the
+    Accept key in the header, the AcceptHeaderVersioning class will set the
+    request.version attribute to '1.2' . This scheme is known as media type
+    versioning, content negotiation versioning or accept header versioning.
+HostNameVersioning : This class configures a versioning scheme that requires
+    each request to specify the desired version as a value included in the hostname in
+    the URL. For example, if a request specifies
+    v2.myrestfulservice.com/drones/ as the URL, it means that the request
+    wants to work with version number 2 of the RESTful Web Service. This scheme is
+    known as hostname versioning or domain versioning.
+URLPathVersioning : This class configures a versioning scheme that requires
+    each request to specify the desired version as a value included in the URL path.
+    For example, if a request specifies v2/myrestfulservice.com/drones/ as the
+    URL, it means that the request wants to work with version number 2 of the
+    RESTful Web Service. The class requires us to work with a version URL
+    keyword argument. This scheme is known as URI versioning or URL path
+    versioning.
+NamespaceVersioning : This class configures the versioning scheme explained
+    for the URLPathVersioning class. The only difference compared with this other
+    class is that the configuration in the Django REST framework application is
+    different. In this case, it is necessary to use URL namespacing.
+    QueryParameterVersioning : This class configures a versioning scheme that
+    requires each request to specify the desired version as a query parameter. For
+    example, if a request specifies myrestfulservice.com/?version=1.2 , the
+    QueryParameterVersioning class will set the request.version attribute to
+    '1.2' . This scheme is known as query parameter versioning or request
+    parameter versioning.
+QueryParameterVersioning : This class configures a versioning scheme that
+    requires each request to specify the desired version as a query parameter. For
+    example, if a request specifies myrestfulservice.com/?version=1.2 , the
+    QueryParameterVersioning class will set the request.version attribute to
+    '1.2' . This scheme is known as query parameter versioning or request
+    parameter versioning.
+    
+

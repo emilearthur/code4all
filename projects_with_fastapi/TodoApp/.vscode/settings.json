@@ -1,0 +1,8 @@
+{
+    "python.pythonPath": "/home/emilextrig/miniconda3/envs/ml/bin/python",
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--max-line-length=120",
+        "--ignore=E402",],
+}

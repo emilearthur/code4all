@@ -1,0 +1,19 @@
+Date: {{date}}
+From: {{from}}
+Subject: {{subject}}
+To: {{to}}
+
+Hello {{name}},
+
+We have receieved your payment!
+
+Below is the list of items we will deliver for lunch:
+
+{% for item in items %}- {{item['name']}} ({{item['price']}} Euros)
+
+{% endfor %}
+
+Thanks your doing business with Us!
+
+--
+Tiks Burger.

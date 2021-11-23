@@ -1,0 +1,13 @@
+{
+    "python.pythonPath": "/home/emilextrig/miniconda3/envs/ml/bin/python",
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "test_2",
+            "database": "\\\\wsl$\\Ubuntu-18.04\\home\\emilextrig\\workspace\\code4all\\PYTHON3-OOP\\sales.db"
+        }
+    ],
+    "sqltools.useNodeRuntime": true,
+    "notebook.displayOrder": []
+}
