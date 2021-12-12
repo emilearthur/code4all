@@ -1,0 +1,24 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "xprotocol"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "mysql_local",
+            "database": "farmers_market",
+            "username": "root",
+            "password": "Hackemile@@##8889"
+        },
+        {
+            "previewLimit": 100,
+            "driver": "SQLite",
+            "name": "koa assignment",
+            "database": "/home/emilextrig/Downloads/transaction.db"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}
