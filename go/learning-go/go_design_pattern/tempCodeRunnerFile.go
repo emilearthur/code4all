@@ -1,1 +1,1 @@
-continue
+dict2.txt
