@@ -167,13 +167,13 @@ func sortRunes(str string) string {
 // load loads content of file fname into memory as []string
 func load(fname string) ([]string, error) {
 	if fname == "" {
-		return nil, errors.New("Dictionary file name cannot be empty")  // error returned.
+		return nil, errors.New("Dictionary file name cannot be empty") // error returned. Also new type of errror was created.
 	}
-	file, err := os.Open(fname)
+	file, err := os.Open(fname) // returns a pointer representation of the filea and the error assigned to the file.
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Unable to open file %s: %s", fname, err)
 	}
-	defer file.Close()
+	defer file.Close() // push file close to the last call before the function ends.
 
 	var lines []string
 	scanner := bufio.NewScanner(file)
@@ -182,6 +182,74 @@ func load(fname string) ([]string, error) {
 		lines = append(lines, scanner.Text())
 	}
 	return lines, scanner.Err()
+}
+
+// Deferring function call.
+// Go supports defering a function call. Using defer before a function call has an effect of pushing the function unto
+// an internal stack, delaying its execution right beore the enclosing function returns.
+// Defer calls are executed using last-in-first-out order. deferred statements are push into stack.
+// One idiomatic usage for defer is to do resource cleanup. ie. closing open files, releasing network resources,
+// closing go channels, commiting database transcation and do on.
+
+func do(steps ...string) {
+	defer fmt.Println("All done!")
+	for _, s := range steps {
+		defer fmt.Println(s)
+	}
+	fmt.Println("Starting")
+}
+
+// Function panic and recovery
+// panic function is a way to abruptl exit an executing function. Conversely, when a program is panicking, Go provides a way
+// of recovering and regaining control of the execution flow. A function may panic due to of the following:
+// Explicitly calling then panic built-in function, Using a source code package that panics due to an abnormal state,
+// Accessing a nil value or an out-of-bound array element, Concurrency deadlock.
+// When a function panics, it aborts and executes islts deferred calls. Then it caller panics, causing a chain reaction.
+// below is an anagram program that cause explicit panic if an output anagram file already exists when it tries to create one.
+
+// write maps of anagrams to a file specified by fname
+func write(fname string, anagram map[string][]string) {
+	if anagram == nil {
+		panic("Unable to write, anagrams missing.")
+	}
+	file, err := os.OpenFile(fname,
+		os.O_WRONLY+os.O_CREATE+os.O_EXCL,
+		0644)
+	if err != nil {
+		msg := fmt.Sprintf("Unable to create output file: %v", err)
+		panic(msg)
+	}
+	defer file.Close()
+	for k, v := range anagram {
+		output := fmt.Sprintf("%s -> %v\n", k, v)
+		file.WriteString(output)
+	}
+}
+
+// mapWords maps each word to its assocatie signature.
+func mapWords(words []string) map[string][]string {
+	anagrams := make(map[string][]string)
+	for _, word := range words {
+		wordSig := sortRunes(word)
+		anagrams[wordSig] = append(anagrams[wordSig], word)
+	}
+	return anagrams
+}
+
+// Function panic recovery
+// when a function panics, it crash an entire program. It is possible to regain control after a panic sequence has started.
+// to do such go has a function called recover. recover works in tandem with panic. A call to function recover returns the
+// value that was passed as an argument to panic.
+
+// a function that fials to open a file. it will panic and will recover
+func makeAnagrams(words []string, fname string) {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Failed to make anagram:", r)
+		}
+	}()
+	anagrams := mapWords(words)
+	write(fname, anagrams)
 }
 
 func main() {
@@ -256,18 +324,35 @@ func main() {
 	results()
 
 	// signaling errors
-	words, err := load("dict2.txt")
+	wordsSignal, err := load("dict2.txt")
 	if err != nil {
 		fmt.Println("Unable to load file:", err)
 		os.Exit(1)
 	}
 
-	anagrams := make(map[string][]string) // for an empty dict. takes list of strings.
-	for _, word := range words {
+	anagramsSignal := make(map[string][]string) // for an empty dict. takes list of strings.
+	for _, word := range wordsSignal {
 		wordSig := sortRunes(word)
-		anagrams[wordSig] = append(anagrams[wordSig], word) // add to dictioanary
+		anagramsSignal[wordSig] = append(anagramsSignal[wordSig], word) // add to dictioanary
 	}
-	for k, v := range anagrams {
+	for k, v := range anagramsSignal {
 		fmt.Println(k, "->", v)
 	}
+
+	// defer function calls
+	do("Find key", "Apply break", "Put key in ignition", "Start Car")
+
+	// panic
+	wordsPanic, err := load("dict2.txt")
+	if err != nil {
+		fmt.Println("Unable to load file:", err)
+		os.Exit(1)
+	}
+	//anagramsPanic := mapWords(wordsPanic) // generate map of anagram. did comment to see how recovery works
+
+	//write("out.txt", anagramsPanic) // write output file. did comment to see how recovery works
+
+	// recover
+	makeAnagrams(wordsPanic, "out.txt")
+
 }

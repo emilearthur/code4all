@@ -55,13 +55,13 @@ func (mass amu) float() float64 {
 }
 
 var metalloids = []metalloid{
-	metalloid{"Boron", 5, 10.81},
-	metalloid{"Silicon", 14, 28.085},
-	metalloid{"Germanuim", 32, 74.63},
-	metalloid{"Arsenic", 33, 74.921},
-	metalloid{"Antimony", 51, 121.760},
-	metalloid{"Tellerium", 52, 127.60},
-	metalloid{"Polonium", 84, 209.0},
+	{"Boron", 5, 10.81},
+	{"Silicon", 14, 28.085},
+	{"Germanuim", 32, 74.63},
+	{"Arsenic", 33, 74.921},
+	{"Antimony", 51, 121.760},
+	{"Tellerium", 52, 127.60},
+	{"Polonium", 84, 209.0},
 }
 
 // find # of moles

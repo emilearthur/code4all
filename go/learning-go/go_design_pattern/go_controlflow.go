@@ -77,17 +77,17 @@ type Curr struct {
 }
 
 var currencies = []Curr{
-	Curr{"DZD", "Algerian Dinar", "Algeria", 12},
-	Curr{"AUD", "Australian Dollar", "Australia", 36},
-	Curr{"EUR", "Euro", "Belgium", 978},
-	Curr{"CLP", "Chilean Peso", "Chile", 152},
-	Curr{"EUR", "Euro", "Greece", 978},
-	Curr{"HTG", "Gourde", "Haiti", 332},
-	Curr{"HKD", "Hong Kong Dollar", "Hong Kong", 344},
-	Curr{"KES", "Kenyan Shilling", "Kenya", 404},
-	Curr{"MXN", "Mexican Peso", "Mexico", 484},
-	Curr{"USD", "US Dollar", "United States", 840},
-	Curr{"EUR", "Euro", "Italy", 978},
+	{"DZD", "Algerian Dinar", "Algeria", 12},
+	{"AUD", "Australian Dollar", "Australia", 36},
+	{"EUR", "Euro", "Belgium", 978},
+	{"CLP", "Chilean Peso", "Chile", 152},
+	{"EUR", "Euro", "Greece", 978},
+	{"HTG", "Gourde", "Haiti", 332},
+	{"HKD", "Hong Kong Dollar", "Hong Kong", 344},
+	{"KES", "Kenyan Shilling", "Kenya", 404},
+	{"MXN", "Mexican Peso", "Mexico", 484},
+	{"USD", "US Dollar", "United States", 840},
+	{"EUR", "Euro", "Italy", 978},
 }
 
 // isDollar check
