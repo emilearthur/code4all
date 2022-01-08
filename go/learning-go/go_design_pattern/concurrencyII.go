@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -162,6 +163,151 @@ func wordsG(stopCh chan struct{}, data []string) <-chan string {
 // Channel timeout
 // with go concurrency the use of select statement can be implmented wih timeouts. this works byusing the statment to wait for
 // a channel operation to succeed withint a give time duration using the API from the time package.
+
+// The sync package
+// there are instances when accesssing shared value using traditional methods are simpler and more appropriate than the use of
+// channels. the sync package provides several sync primitives including mutual exclusion(mutex) locks and sync barriers for
+// for safe access to shared values.
+
+// Synchronizing with mutex locks
+// mutex locks allow serial access of shared resources by causing goroutines to block and wait until locks are released.
+// e.g. below is a Service type, which must be started before it is ready to be used. After the service has started, the
+// code updates an internal bool variable started and store its current state.
+
+// ServiceS Type
+type ServiceS struct {
+	started bool
+	stpCh   chan struct{}
+	mutex   sync.Mutex
+}
+
+// Start method
+func (s *ServiceS) Start() {
+	s.stpCh = make(chan struct{})
+	go func() {
+		s.mutex.Lock()
+		s.started = true
+		s.mutex.Unlock()
+		fmt.Println(s.started)
+		<-s.stpCh // wait to be closed.
+	}()
+}
+
+// Stop method
+func (s *ServiceS) Stop() {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	if s.started {
+		s.started = false
+		close(s.stpCh)
+		fmt.Println(s.started)
+	}
+}
+
+// one idiom you will often encouter is to embed the sync.Mutex type directly inside a struct
+type Service struct {
+	started bool
+	stpCh   chan struct{}
+	sync.Mutex
+}
+
+// Start method
+func (s *Service) Start() {
+	s.stpCh = make(chan struct{})
+	go func() {
+		s.Lock()
+		s.started = true
+		s.Unlock()
+		fmt.Println(s.started)
+		<-s.stpCh // wait to be closed.
+	}()
+}
+
+// Stop method
+func (s *Service) Stop() {
+	s.Lock()
+	defer s.Unlock()
+	if s.started {
+		s.started = false
+		close(s.stpCh)
+		fmt.Println(s.started)
+	}
+}
+
+// The sync package also offers the RWMutex(read-write mutex), which can be used in cases where there is on writer that
+// updates the shared resource, while there may be multiple readers. THe writer would update the resource using full lock, as
+// before. However, readers use the RLock()/Runlock() method pair (for read-lock/read-unlock respectively) to apply a read-only
+// lock when reading the shared resource.
+
+// Synchronizing access to composite values
+// as concurrency safety is important when sharing access to simple values. the same level of care must be applied when sharing
+// access to composite values such as maps and slices since go does not offer concurrency-safe verison of these type. e.g. below
+
+// ServicesSA here
+type ServicesSA struct {
+	started bool
+	stpCh   chan struct{}
+	cache   map[int]string
+	sync.RWMutex
+}
+
+// Start function
+func (s *ServicesSA) Start() {
+	s.stpCh = make(chan struct{})
+	s.cache = make(map[int]string)
+	go func() {
+		s.Lock()
+		s.started = true
+		s.cache[1] = "Hello World"
+		s.cache[2] = "Hello Universe"
+		s.cache[3] = "Hello Galaxy!"
+		s.Unlock()
+		<-s.stpCh // wait to be closed
+	}()
+
+}
+
+// Stop service
+func (s *ServicesSA) Stop() {
+	s.Lock()
+	defer s.Unlock()
+	if s.started {
+		s.started = false
+		close(s.stpCh)
+	}
+}
+
+// Server service
+func (s *ServicesSA) Server(id int) {
+	s.RLock() // using RWMutex varaibe to manage locks when accessign the map variable cache.
+	msg := s.cache[id]
+	s.RUnlock() // this provide concurrency safety
+	if msg != "" {
+		fmt.Println(msg)
+	} else {
+		fmt.Println("Hello, goodbye!")
+	}
+}
+
+// Concurrency barriers with sync.WaitGroup
+// sometimes when working with goroutines, you may need to create a sync barrier where you wish to wait for all running goroutines
+// to finish before proceeding. The sync.WaitGroup type is designed for such scenario, allowing multple goroutines to rendezvous
+// at a specific point in the code. Using WaitGroup requires three things: 1. The number of participants in the group via the
+// add method. 2. Each goroutine calls the done method to signal completion. 3. User the wait method to block until all
+// goroutine are done. WaitGroup is often used as a way to implement work distributed patterns.
+// e.g. below we illustraite work distribution to calculate the sum of multiples of 3 and 5 up to MAX. we use WaitGrou variable wg,
+// to create a concurrency barrier tha waits for two goroutines to calculate the partial sums of the number then gathers the
+// results after  all gorotutines are done.
+
+// MAX value
+const MAX = 1000
+
+// Detecting race conditions
+// Debugging concurren code with race conditio can be time consuming and frustrating. when race condition occurs, it is usually
+// inconsistent and displays little to no discernible pattern. But go has a race detector as part of its cmd-line tool chain.
+// when building, testing, installing or running go source code, simply add the -race command flag to enable dectector
+// instrumentation of your code.
+// run the following in terminal -> go run -race filename.go
 
 func main() {
 	go count(10, 50, 10)
@@ -401,5 +547,54 @@ func main() {
 	case <-time.After(200 * time.Microsecond):
 		fmt.Println("Sorry, took too long to count.")
 	}
+
+	// Synchronizing with mutex locks
+	s := &ServiceS{}
+	s.Start()
+	time.Sleep(time.Second) // do some work
+	s.Stop()
+
+	sp := &Service{}
+	sp.Start()
+	time.Sleep(time.Second) // do some work
+	sp.Stop()
+
+	ss := &ServicesSA{}
+	ss.Start()
+	ss.Server(3) // do some work
+	ss.Stop()
+
+	// Concurrency barriers with sync.WaitGroup
+	values := make(chan int, MAX)
+	result := make(chan int, 3) // configs for three go routine
+	var wg sync.WaitGroup
+	wg.Add(3) // number of participants in group add via add method. in this case the number is 3.
+	go func() {
+		defer close(values)
+		// generate multiple of 3 & 5 values
+		for i := 0; i < MAX; i++ {
+			if (i%3) == 0 || (i%5) == 0 {
+				values <- i // push downstream
+			}
+		}
+	}()
+	work := func() {
+		// work unit, calculate partial results
+		defer wg.Done() // done method to signal competition
+		r := 0
+		for i := range values {
+			r += i
+		}
+		result <- r
+	}
+
+	// distribute work to three goroutine
+	go work()
+	go work()
+	go work()
+
+	wg.Wait()                               // wait for both gorotuines to finish
+	total := <-result + <-result + <-result // gather partial results
+	fmt.Println("Total:", total)
 
 }

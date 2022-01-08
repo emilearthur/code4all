@@ -24,9 +24,9 @@ func twoWayOptimal(list []int, pairSum int) []int {
 		complement := pairSum - list[i]
 		j, ok := hash[complement]
 		if ok {
-			return []int{i, j}
+			return []int{j, list[i]}
 		}
-		hash[list[i]] = i
+		hash[list[i]] = list[i]
 
 	}
 	return []int{}
@@ -39,6 +39,6 @@ func main() {
 	output := twoWayBruteForce(list, pairSum)
 	fmt.Println(output)
 
-	output2 := twoWayBruteForce(list, pairSum)
+	output2 := twoWayOptimal(list, pairSum)
 	fmt.Println(output2)
 }
